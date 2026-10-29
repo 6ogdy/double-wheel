@@ -1,7 +1,66 @@
-# Double Wheel: predare (29 oct 2026)
+# Double Wheel: predare (actualizat 30 oct 2026)
 
 Document pentru o sesiune nouă. Înlocuiește `PLAN.md`, care e vechi (a fost scris înainte să existe demo-ul).
-Citește mai întâi secțiunea **Ce a cerut Bogdan ca următor pas**, apoi restul.
+**Citește mai întâi secțiunea 0 (starea de acum).** Secțiunile 3, 4 și 8 de mai jos sunt din 29 oct și sunt depășite în părțile marcate acolo.
+
+## 0. Starea la 30 oct 2026 (citește primul)
+
+### Ce e făcut și verificat
+
+| Ce | Starea acum |
+|---|---|
+| Pietre | Cele 5 din Figma, fișier `AOF1TrOfT05yBhSCclowOc`, frame "Diamonds - NEW VERSION": Gold `2013:11756`, Green `2013:11758`, Blue `2013:11763`, Pink `2013:11768`, Purple `2013:11773`. În Figma sunt portret (380x500); în joc sunt rotite 90° în sens orar și intră exact în 1500x1140 (3x din caseta 500x380). |
+| Roți | `Wheel - 4` magenta (`2022:18105`, stânga, imaginea `blw`) și `Wheel - 3` verde (`2019:12814`, dreapta, imaginea `brw`), făcute de Bogdan în Figma. Exportate transparent la 1020 px, în `assets/wheel/`. Fără text: multiplicatorul îl desenează jocul. |
+| Poziții | **20 în loc de 25.** Scoase (0-based): 3, 12, 21 (aurii), 14 (verde), 24 (WILD). `seq` nou: `[1,2,3,6,4,1,2,6,1,2,3,6,1,4,6,1,2,3,5,2]`. |
+| Pietre pe roată | Lățime 144 px în caseta de 1000 px a roții (originalul: 120), raza 401. Mai mari nu încap: le limitează grosimea inelului de lemn, nu numărul de poziții. |
+| WILD | Obsidian (`wild_n2`), în același cadru ca diamantele (aceeași lățime, 144 px). |
+| Roți pe ecran | Scale 1.058 (~700 px), centre la x=730 și x=1530 (din 1920). Diamantul central: `margin-left:170px`, centrul lui real e la 1130 = mijlocul dintre roți (măsurat). |
+| Artifact | Public `8Gr8mdYoUgjrU7cGov3ii8`, versiunea 4 = starea de mai sus. Al doilea, `SL1AvvkppMENDsBk6XQZd3`, versiunea 3, la fel. La a doua publicare acesta a apărut ca "Anyone with the link" (setarea nu am schimbat-o eu). |
+
+**Cum e legat de joc (citit în `main.d348ebcc.js`):** poziția câștigătoare vine din `commCrash` (ex. `"9,19"`, de la 1 la 25). Tipul pietrei de pe acea poziție este valoarea din `crash` (ex. `"6,1"`). Cele 25 de poziții sunt scrise în 4 locuri: `rotationValues` (de 2 ori, câte unul pe roată), `data` (14.4 x 25, de 2 ori), `maxDegree)-7` (de 2 ori) și `(r+5)%25` (de 2 ori). `tools/build_n.py` le schimbă pe toate. Regula intervalelor: centrul valorii `v` e `((N+2-v)%N)*360/N`. La N=25 dă exact tabelul original (verificat cu `tools/verify_rule.py`: 26 de intrări identice).
+
+### Probleme deschise (în ordinea importanței)
+
+1. **Pietrele din Figma au fundal gri opac copt în ele.** Exporturile cu `download_assets` au `(30,30,30,255)` în colțuri și alfa minim 255. Defectul e în artifactul public. Pietrele NU sunt în repo din cauza asta. Soluția care a mers la roți: clonezi simbolul în Figma, `rescale(3)`, apoi `get_screenshot` cu `contentsOnly:true` (dă alfa corect; `get_screenshot` nu mărește peste mărimea nodului, de aceea `rescale`). Exportă cele 5 la 1140x1500 în `out/figma/{gold,green,blue,pink,violet}.png`, apoi rulează pașii de la secțiunea 8.
+2. **Rotirea completă pe 20 de poziții nu a fost văzută.** S-a verificat doar static (poziții, mărime) și matematic (regula de grade). Panoul Browser din aplicație îngheață animațiile când e ascuns: pune tab-ul în față cu `tabs_select`. Roțile apar abia după ~90 s de la încărcare, pentru că ceasul de acolo e blocat la 0. Test rapid: forțează roțile cu `.wheel_stonesCon,.wheel_stonesCon2{transform:none!important;opacity:1!important}` (arată doar poziția statică).
+3. **Piatra multicoloră aleasă de Bogdan:** `assets/multicolor/multicolor_m5_1140x1500.png` (formă Figma, lumină prismatică din `assets/refs/multicolor_style_ref.png`). Nu e folosită în joc: jocul are 6 tipuri (1 aur, 2 verde, 3 albastru, 4 roz, 5 violet, 6 WILD) și niciun loc pentru ea. Ea tot are fundal opac (vezi 1 pentru metodă). Cum o folosim e încă de decis cu Bogdan. Atenție: `MultiColor` din Figma era identic cu Violet (diferență maximă 4 din 255), n-a fost o piatră nouă.
+4. **Joc real (nu demo):** serverul trebuie să trimită `seq` cu 20 de valori și poziții câștigătoare între 1 și 20. Scoaterea pietrelor schimbă probabilitățile (acum 4 WILD din 20, nu 5 din 25). În demo merge pentru că `replay.js` mapează rundele înregistrate pe o poziție de același tip.
+5. **Figma, ordine de făcut:** copia "Wheel - 1 / fara disc exterior" (`2016:12331`) a rămas lângă original. Copiile temporare de export le-am șters. Frame-ul "Diamonds - NEW VERSION" nu mai are `Wild` și `MultiColor` (le-a scos Bogdan). Pasul "Figma curat cu componente" nu e făcut.
+6. **Roți:** discurile sunt la 1020 px (de la 510 în prima încercare). Dacă pe un ecran mare par moi, se exportă la 3x.
+
+### Ce a ieșit prost în sesiune (ca să nu se repete)
+
+- **Recolorarea pe pixeli** (gradient map, hue fix) a ieșit urât, Bogdan a respins-o ("nu arată bine deloc"). Culorile se iau din Figma, nu se generează.
+- **Piatra multicoloră:** primele variante (patru pătrate dure de culoare; degrade curgător; opal alb) au fost respinse. A mers abia cu **două referințe**: gema de formă + o imagine de stil dată de Bogdan (`gpt_image_2_5`, 2k high, fundal transparent, 2,75 credite/imagine).
+- **Măsurătoare greșită:** am citit `.arrow-container` (lățime 0, deci marginea lui, nu centrul) ca centru al diamantului și l-am dus cu 97 px prea la dreapta. Centrul real se măsoară pe `#centerGems`, cu `transform:none` și scale 1.
+- **Ghicit în loc de întrebat:** nu ghici ce înseamnă "varianta multicolor". Întreabă o singură dată, scurt.
+
+### Cum reiei (pipeline nou, din rădăcina proiectului)
+
+```bash
+bash tools/fetch_game.sh
+cp demo/rec_try1.jsonl demo/rec.jsonl out/ && mkdir -p out/new && cp assets/wild/wild_n2.webp out/new/
+py -I tools/sprites_half.py </dev/null     # sprite-urile personajului la jumătate
+py -I tools/mkreplay.py </dev/null         # out/game/replay.js
+py -I tools/mkdemo.py </dev/null           # out/game/demo.html = index.html + replay.js (lipsea din pașii vechi)
+py -I tools/pub.py </dev/null              # out/game_pub
+py -I tools/demo_css.py </dev/null
+py -I tools/lean.py </dev/null
+py -I tools/wildswap.py </dev/null
+cp -r out/game_pub out/game_pub_fig        # baza curată
+# exportă cele 5 pietre din Figma în out/figma/*.png (transparente, 1140x1500), vezi problema 1
+py -I tools/figma_put.py </dev/null        # pietrele în game_pub_fig (rotite 90° orar)
+py -I tools/build_n.py </dev/null          # out/game_pub_s2: 20 poziții, roțile din assets/wheel, CSS, replay
+py -I tools/mkmap_s2.py </dev/null         # tipărește harta de fișiere pentru publicare
+```
+
+Publicare: `Artifact` cu `file_path` = `demo/demo_game.html`, `root` = `out` (cale absolută), `files` = harta tipărită de `mkmap_s2.py`. Artifactul public îl vede clientul: se înlocuiește doar când spune Bogdan. Variantele noi merg într-un artifact nou.
+
+Scripturile din pipeline rulează toate din rădăcină; `build_n.py` și `figma_put.py` fac singure `chdir("out")`. Toate comenzile Python cu `</dev/null` (regula 8 din `~/.claude/CLAUDE.md`). Un hook (`pyguard.py`) blochează `py -I - <<'E'`: scrie scriptul într-un fișier și rulează-l.
+
+### Ce a cerut Bogdan, ca să nu se piardă
+
+Pașii lui, în ordine: (1) altă recolorare a pietrelor, **făcut prin Figma**; (2) doar discul exterior scos, **făcut de Bogdan în Figma, roțile 3 și 4**; (3) mai puține poziții, **făcut: 20**; (4) WILD la lățimea diamantelor, **făcut**; (5) publică, apoi commit și push pe main, **publicat de două ori; commit făcut în sesiunea asta**. Bogdan a spus "nu e chiar ce trebuie", deci urmează o altă rundă; întreabă-l ce nu e corect.
 
 ## 1. Scop
 
