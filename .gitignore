@@ -1,1 +1,4 @@
 assets/orig/
+out/
+__pycache__/
+*.pyc

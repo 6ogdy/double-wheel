@@ -1,0 +1,18 @@
+<title>Double Wheel Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: the game fills the window at 16:9, scaled from its native 1920 x 1080. Single dark look, the page is only a frame for the game. */
+:root { --bg: #070b08; color-scheme: dark; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); display: grid; place-items: center; overflow: hidden; }
+#stage { position: relative; width: min(100vw, 177.78vh); aspect-ratio: 16 / 9; overflow: hidden; background: var(--bg); }
+#game { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; border: 0; transform-origin: 0 0; }
+</style>
+<div id="stage"><iframe id="game" src="game/index.html" title="Double Wheel" allow="autoplay"></iframe></div>
+<script>
+(function () {
+  var stage = document.getElementById("stage"), game = document.getElementById("game");
+  function fit() { game.style.transform = "scale(" + (stage.clientWidth / 1920) + ")"; }
+  fit(); window.addEventListener("resize", fit);
+})();
+</script>
