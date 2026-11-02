@@ -1,14 +1,11 @@
-"""Put the real princess sprite sheets (half size, 425 px frames) into the 25-position games.
-The published copies carried blank 4200x4200 placeholders (identical md5, no visible pixels), so the princess never showed.
-usage (repo root): py tools/restore_princess.py   -- needs out/game_small/*_half.webp (made by the sheet recompression step)"""
-import shutil
-
-SHEETS = ['idle.8ea07a61d9d150621e57', 'pending.b4f905d3bde8f7f7d722', 'winning.0ebfac7e244ab37c9a79']
+"""Patch the 25-position games for 425 px princess frames. Run it after build_v6.py (which recreates the game folders),
+then run build_princess_sheets.py to put the real sheets in. The published copies once carried blank 4200x4200 placeholders
+(identical md5, no visible pixels), so the princess never showed.
+Patches: frameWidth 300 -> 425 in main.js, canvas scale 2.8333 -> 2 and a 91 px downward translate in index.html.
+usage (repo root): py tools/restore_princess.py"""
 for kind in ('moss', 'clean'):
     G = f'assets/wheel-v6{kind}-25/game-published'
-    for n in SHEETS:
-        shutil.copyfile(f'out/game_small/{n}_half.webp', f'{G}/static/media/{n}.webp')
-    js = f'{G}/static/js/main.d348ebcc.js'
+    js =f'{G}/static/js/main.d348ebcc.js'
     code = open(js, encoding='utf-8').read()
     a, b = 'frameWidth:300,frameHeight:300', 'frameWidth:425,frameHeight:425'
     if code.count(a) == 1: code = code.replace(a, b)
