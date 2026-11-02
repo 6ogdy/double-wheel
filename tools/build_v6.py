@@ -12,10 +12,12 @@ from scipy.ndimage import gaussian_filter, zoom
 KIND = next((a for a in sys.argv[1:] if a in ('moss', 'clean')), None)
 assert KIND, 'usage: build_v6.py moss|clean'
 MOSS = KIND == 'moss'
-SRC = 'assets/wheel-v5full/game-published'
-OUT = f'assets/wheel-v6{KIND}/game-published'
+SFX = '' if os.environ.get('N', '20') == '20' else '-' + os.environ['N']   # N=25: reads wheel-v5full-25, writes wheel-v6<kind>-25
+SRC = f'assets/wheel-v5full{SFX}/game-published'
+OUT = f'assets/wheel-v6{KIND}{SFX}/game-published'
 MED = 'static/media'
 C = 500.0
+SH = 0 if os.environ.get('N', '20') == '20' else 14      # medallion growth, same as build_v5.py
 rng = np.random.default_rng(7)
 
 def smooth(a, b, x): t = np.clip((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t)
@@ -82,7 +84,7 @@ def stone_ring(img):
         groove = np.clip((.85 - relief) * 2.5, 0, 1)
         col = add_moss(col, .55 * outer + .5 * groove - .2, h, w)
     out = img.copy()
-    zone = smooth(262, 268, rho)[..., None]                       # medallion (rho < 262) stays as it is
+    zone = smooth(262 + SH, 268 + SH, rho)[..., None]                 # medallion (rho < 262 + SH) stays as it is
     out[..., :3] = rgb * (1 - zone) + col * zone
     return out
 
