@@ -1,10 +1,10 @@
-"""Princess sprite sheets from the PNG sequences in assets/girl (850x850, transparent).
+"""Princess sprite sheets from the PNG sequences in assets/girl/v1 (the dress version; v2 is the short-costume version, not used) (850x850, transparent).
 Frames are resized to 425 px and laid out row by row in the same grids the game already uses (idle 8x8, pending 13x13, winning 12x12),
 so the game only needs the sheets replaced. Writes into both 25-position game folders. run from the repo root: py tools/build_princess_sheets.py"""
 import glob, os
 from PIL import Image
 
-SEQ = {'idle.8ea07a61d9d150621e57': ('Idle/idle_final', 8), 'pending.b4f905d3bde8f7f7d722': ('Pending/pending 8 sec - 3', 13), 'winning.0ebfac7e244ab37c9a79': ('Winning/winning 7 sec - 3', 12)}
+SEQ = {'idle.8ea07a61d9d150621e57': ('v1/idle_final', 8), 'pending.b4f905d3bde8f7f7d722': ('v1/pending 8 sec - 3', 13), 'winning.0ebfac7e244ab37c9a79': ('v1/winning 7 sec - 3', 12)}
 FW = 425
 for name, (folder, n) in SEQ.items():
     fs = sorted(glob.glob(f'assets/girl/{folder}/*.png'))
