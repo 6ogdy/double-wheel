@@ -66,12 +66,10 @@ Everything in the file is in English.
 
 | Section | Node | Content |
 |---|---|---|
-| Wheels, 25 positions | `26:2` | `21`, `22` empty rings (1000x1000); `23`, `24` layered wheels: a `Wheel / Left` or `Wheel / Right` frame with a `Wheel Empty` instance and 25 Gem and Wild instances |
+| Wheels, 25 positions | `26:2` | `23`, `24` layered wheels (1000x1000): a `Wheel / Left` or `Wheel / Right` frame with a `Wheel Empty` instance and 25 Gem and Wild instances |
 | Game screens, 5 phases | `35:2` | frames `41` to `45` (1920x1080), built from layers |
 | Girl (princess) | `30:2` | 8 poses, 850x850: `31` to `33` idle, `34`, `35` pending, `36` to `38` winning (`30:3` to `30:10`) |
-| Components | `39:2` | `Gem` set `39:8` (Gold `39:3`, Green `39:4`, Blue `39:5`, Pink `39:6`, Violet `39:7`), `Wild` set `39:11` (Normal `39:9`, Flipped `39:10`), `Wheel Empty` set `39:14` (Left `39:12`, Right `39:13`) |
-| Gems | `1:26` | 5 gems, 1500x1140, transparent (background cut out) |
-| WILD plaques | `1:28` | 450x342, not high quality (see open items) |
+| Components and source assets | `39:2` | `Gem` set `39:8` (Gold `39:3`, Green `39:4`, Blue `39:5`, Pink `39:6`, Violet `39:7`; 1500x1140, background cut out), `Wild` set `39:11` (Normal `39:9`, Flipped `39:10`; 450x342, not high quality, see open items), `Wheel Empty` set `39:14` (Left `39:12`, Right `39:13`; 1000x1000). These are also the source assets: the separate `Gems`, `WILD plaques` and empty-ring frames duplicated them and were deleted on 2026-11-03. |
 | Foot and altar | `1:24` | foot 816x441, altar 2000x280 |
 | Center gem and arrows | `1:30` | game originals |
 | Background, decoration, frame, logo | `1:32` | game originals |
