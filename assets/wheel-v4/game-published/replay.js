@@ -1,5 +1,26 @@
 
 (function () {
+  // multicolor gems: 2-3 per wheel and round, replacing random stones; every colour stays on the wheel, WILD (6) is never replaced
+  window.__mc = (function () {
+    var cache = {};
+    function pick(v) {
+      var n = v.length, cnt = {}, i, k;
+      v.forEach(function (x) { cnt[x] = (cnt[x] || 0) + 1; });
+      var want = 2 + Math.floor(Math.random() * 2), out = [], tries = 0;
+      while (out.length < want && tries++ < 200) {
+        i = Math.floor(Math.random() * n);
+        if (v[i] === 6 || cnt[v[i]] < 2 || out.some(function (j) { var d = Math.abs(i - j); return Math.min(d, n - d) < 3; })) continue;
+        cnt[v[i]]--; out.push(i);
+      }
+      return out;
+    }
+    return function (i, v, def, side) {
+      if (!v || !v.length) return def;
+      var key = side + v.join(','), hit = cache[key];
+      if (!hit) { cache = {}; hit = cache[key] = pick(v); }
+      return hit.indexOf(i) >= 0 ? './img/multicolor.webp' : def;
+    };
+  })();
   var VISUAL = {"0": "visual", "1": {"state": "ENDED", "id": 70716, "elapsed": 12303, "created": "2026-10-29T20:06:02.100Z", "crash": "6,1", "commCrash": "9,19", "elem_time": 8000, "start_time": 5000, "history": [{"crash": "6,1"}, {"crash": "2,5"}, {"crash": "6,2"}, {"crash": "1,3"}, {"crash": "2,6"}, {"crash": "2,2"}, {"crash": "3,6"}, {"crash": "2,2"}, {"crash": "1,1"}, {"crash": "5,6"}, {"crash": "1,6"}, {"crash": "1,3"}, {"crash": "1,1"}, {"crash": "6,6,2,3"}, {"crash": "2,6"}, {"crash": "4,6"}, {"crash": "6,2"}, {"crash": "2,2"}, {"crash": "2,1"}, {"crash": "6,6,2,1"}, {"crash": "1,3"}, {"crash": "1,2"}, {"crash": "2,1"}, {"crash": "1,3"}, {"crash": "6,1"}, {"crash": "6,2"}, {"crash": "2,4"}, {"crash": "6,3"}, {"crash": "2,2"}, {"crash": "2,2"}, {"crash": "3,5"}, {"crash": "6,2"}, {"crash": "2,2"}, {"crash": "1,2"}, {"crash": "6,1"}, {"crash": "4,1"}, {"crash": "3,4"}, {"crash": "6,2"}, {"crash": "6,6,6,4"}, {"crash": "1,1"}, {"crash": "1,4"}, {"crash": "4,1"}, {"crash": "1,2"}, {"crash": "2,1"}, {"crash": "6,1"}, {"crash": "4,6"}, {"crash": "6,1"}, {"crash": "2,2"}, {"crash": "6,6,6,1"}, {"crash": "6,2"}, {"crash": "1,1"}, {"crash": "3,6"}, {"crash": "4,1"}, {"crash": "1,1"}, {"crash": "2,4"}, {"crash": "2,1"}, {"crash": "6,6,6,1"}, {"crash": "2,2"}, {"crash": "2,1"}, {"crash": "2,1"}, {"crash": "6,1"}, {"crash": "1,3"}, {"crash": "2,2"}, {"crash": "2,6"}, {"crash": "3,1"}, {"crash": "5,1"}, {"crash": "5,2"}, {"crash": "6,3"}, {"crash": "4,6"}, {"crash": "2,6"}, {"crash": "2,3"}, {"crash": "3,1"}, {"crash": "6,5"}, {"crash": "1,6"}, {"crash": "6,2"}], "coef": {"0": 2, "1": 4, "2": 6, "3": 13, "4": 24, "5": 60, "count": 6, "len": 2}, "seq": [1, 2, 3, 6, 4, 1, 2, 6, 1, 2, 3, 6, 1, 4, 6, 1, 2, 3, 5, 2], "status": "success", "top": {"1": [{"userId": 39925281, "moneyIn": 38095, "moneyOut": 495235, "odds": 1300, "roundId": 68655, "pick": 3, "ticketTime": "2026-10-29 11:24:33", "username": "Test shop 902"}, {"userId": 39925208, "moneyIn": 6350, "moneyOut": 152400, "odds": 2400, "roundId": 68506, "pick": 4, "ticketTime": "2026-10-29 10:38:30", "username": "Test shop 902"}, {"userId": 39925232, "moneyIn": 6350, "moneyOut": 82550, "odds": 1300, "roundId": 68510, "pick": 3, "ticketTime": "2026-10-29 10:39:42", "username": "Test shop 902"}], "7": [{"userId": 39925281, "moneyIn": 38095, "moneyOut": 495235, "odds": 1300, "roundId": 68655, "pick": 3, "ticketTime": "2026-10-29 11:24:33", "username": "Test shop 902"}, {"userId": 39925208, "moneyIn": 6350, "moneyOut": 152400, "odds": 2400, "roundId": 68506, "pick": 4, "ticketTime": "2026-10-29 10:38:30", "username": "Test shop 902"}, {"userId": 39925232, "moneyIn": 6350, "moneyOut": 82550, "odds": 1300, "roundId": 68510, "pick": 3, "ticketTime": "2026-10-29 10:39:42", "username": "Test shop 902"}], "30": [{"userId": 39925281, "moneyIn": 38095, "moneyOut": 495235, "odds": 1300, "roundId": 68655, "pick": 3, "ticketTime": "2026-10-29 11:24:33", "username": "Test shop 902"}, {"userId": 39925208, "moneyIn": 6350, "moneyOut": 152400, "odds": 2400, "roundId": 68506, "pick": 4, "ticketTime": "2026-10-29 10:38:30", "username": "Test shop 902"}, {"userId": 39925232, "moneyIn": 6350, "moneyOut": 82550, "odds": 1300, "roundId": 68510, "pick": 3, "ticketTime": "2026-10-29 10:39:42", "username": "Test shop 902"}]}, "currency": "RON"}};
   var ROUNDS = [["2,6", "2,8"], ["1,1", "13,1"], ["2,2", "10,2"], ["1,2", "1,17"], ["4,1", "5,1"], ["3,4", "11,5"], ["1,3", "13,3"], ["3,3", "11,11"], ["2,1", "2,13"], ["6,6,1,2", "4,12,16,2"], ["6,6,1,3", "4,4,6,3"]];
   var id = VISUAL[1].id, n = 0;
